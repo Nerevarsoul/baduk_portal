@@ -1,6 +1,7 @@
 from django.db import models
 
 from accounts.models import User
+from tsumego.managers import TsumegoResultManager
 
 
 class Tsumego(models.Model):
@@ -66,3 +67,5 @@ class TsumegoResult(models.Model):
 
     def __str__(self):
         return f'Задача {self.tsumego} от {self.user}'
+
+    objects = TsumegoResultManager()
