@@ -21,6 +21,7 @@ class Tsumego(models.Model):
     class Meta:
         verbose_name = 'Задача'
         verbose_name_plural = 'Задачи'
+        unique_together = (('date', 'number',),)
 
     date = models.DateField(verbose_name='Дата публикации')
     number = models.IntegerField(verbose_name='Номер')
@@ -48,6 +49,7 @@ class TsumegoResult(models.Model):
     class Meta:
         verbose_name = 'Результат задачи'
         verbose_name_plural = 'Результаты задач'
+        unique_together = (('tsumego', 'user',),)
 
     tsumego = models.ForeignKey(
         Tsumego,
