@@ -13,8 +13,8 @@ class TsumegoResultQuerySet(QuerySet):
             status='done', tsumego__date__year=year, tsumego__date__month=month
         ).values('user__username').annotate(
             total=Count('user'),
-            first_total=Count('user', filter=Q(tsumego__date__lte=date(year, month, 7))),
-            second_total=Count('user', filter=Q(tsumego__date__gt=date(year, month, 7))),
+            first_total=Count('user', filter=Q(tsumego__date__lte=date(year, month, 15))),
+            second_total=Count('user', filter=Q(tsumego__date__gt=date(year, month, 15))),
         ).order_by('-total')
 
 

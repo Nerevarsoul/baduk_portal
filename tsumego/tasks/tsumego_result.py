@@ -51,18 +51,18 @@ class TsumegoResultParser(BaseSpreadSheetParser):
     def __init__(self, spreadsheet_id):
         super().__init__(spreadsheet_id)
         self.users = []
-        self.month = 9
+        self.month = 10
         self.year = 2019
 
     def set_month_and_year(self, month_sheet: str):
         month, year = month_sheet.split()
 
     def run(self):
-        for month_sheet in self.get_all_ranges():
+        for month_sheet in self.get_all_ranges()[0:1]:
             self.set_month_and_year(month_sheet)
-            reader = csv.reader(self.get_sheet(month_sheet))
+            res = self.get_sheet(month_sheet).get('values', [])
             n = 33
-            for i, row in enumerate(reader):
+            for i, row in enumerate(res):
                 if i == 1:
                     self.parse_user(row)
                 if 2 < i < n:
@@ -74,7 +74,9 @@ class TsumegoResultParser(BaseSpreadSheetParser):
                 #     parse_subscription(row, users)
 
     def parse_user(self, row: List[str]):
-        for ceil in row:
+        counter = 3
+        while counter < len(row):
+            ceil = row[counter]
             if ceil:
                 nickname, name = ceil.split('(')
                 user, _ = User.objects.get_or_create(
@@ -84,6 +86,7 @@ class TsumegoResultParser(BaseSpreadSheetParser):
                 self.users.append(user)
             else:
                 self.users.append(None)
+            counter += 12
 
     def parse_day_result(self, row: List[str]):
 
@@ -114,11 +117,12 @@ class TsumegoResultParser(BaseSpreadSheetParser):
                 for i, task in enumerate(tasks[:int(task_count)]):
                     if any(tasks[:int(task_count)]):
                         try:
-                            TsumegoResult.objects.save(
+                            tsumego_result = TsumegoResult(
                                 user=user,
                                 tsumego=tsumegos[i],
                                 status='done' if bool(task) else 'failed'
                             )
+                            tsumego_result.save()
                         except IntegrityError:
                             pass
             counter += 1

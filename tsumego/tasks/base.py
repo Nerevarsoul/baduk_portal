@@ -37,4 +37,4 @@ class BaseSpreadSheetParser:
         return creds
 
     def get_sheet(self, sheet):
-        return self.sheet.values.get(spreadsheetId=self.spreadsheet_id, range=sheet)
+        return self.sheet.values().get(spreadsheetId=self.spreadsheet_id, range=sheet).execute()
