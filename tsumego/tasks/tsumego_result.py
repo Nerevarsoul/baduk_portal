@@ -1,6 +1,5 @@
-import csv
-from typing import List, Tuple
 from datetime import date
+from typing import List, Tuple
 
 from django.db import IntegrityError
 
@@ -48,30 +47,61 @@ class TsumegoResultParser(BaseSpreadSheetParser):
 
     TRUE = 'TRUE'
 
+    MONTH_MAP = {
+        'янв': 1,
+        'фев': 2,
+        'мар': 3,
+        'апр': 4,
+        'май': 5,
+        'июн': 6,
+        'июл': 7,
+        'авг': 8,
+        'сен': 9,
+        'окт': 10,
+        'ноя': 11,
+        'дек': 12,
+    }
+
     def __init__(self, spreadsheet_id):
         super().__init__(spreadsheet_id)
         self.users = []
         self.month = 10
         self.year = 2019
 
-    def set_month_and_year(self, month_sheet: str):
+    def get_current_range(self) -> str:
+        today = date.today()
+        for range_name in self.get_all_ranges():
+            month, year = self.get_month_and_year(range_name)
+            if month == today.month and year == today.year:
+                return range_name
+
+    def get_month_and_year(self, month_sheet: str) -> Tuple[int, int]:
         month, year = month_sheet.split()
+        month = self.MONTH_MAP[month[0:3].lower()]
+        return month, int(year)
 
-    def run(self):
-        for month_sheet in self.get_all_ranges()[0:1]:
-            self.set_month_and_year(month_sheet)
-            res = self.get_sheet(month_sheet).get('values', [])
-            n = 33
-            for i, row in enumerate(res):
-                if i == 1:
-                    self.parse_user(row)
-                if 2 < i < n:
-                    today = self.parse_day_result(row)
-                    if today:
-                        n = 0
+    def run_current(self):
+        range_name = self.get_current_range
+        self.handle_range(range_name)
 
-                # if i > 38:
-                #     parse_subscription(row, users)
+    def run(self, first_range: int):
+        for range_name in self.get_all_ranges()[first_range:]:
+            self.handle_range(range_name)
+
+    def handle_range(self, range_name):
+        self.month, self.year = self.get_month_and_year(range_name)
+        res = self.get_sheet(range_name).get('values', [])
+        n = 33
+        for i, row in enumerate(res):
+            if i == 1:
+                self.parse_user(row)
+            if 2 < i < n:
+                today = self.parse_day_result(row)
+                if today:
+                    n = 0
+
+            # if i > 38:
+            #     parse_subscription(row, users)
 
     def parse_user(self, row: List[str]):
         counter = 3
@@ -125,7 +155,6 @@ class TsumegoResultParser(BaseSpreadSheetParser):
                             tsumego_result.save()
                         except IntegrityError:
                             pass
-            counter += 1
 
         return today
 

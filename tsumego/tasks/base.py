@@ -7,7 +7,6 @@ from google.auth.transport.requests import Request
 
 
 class BaseSpreadSheetParser:
-    # SPREADSHEET_ID = '1sCWQkWw0K8I77CWrmLeLHwiSCNnBV4HBXg2NMJ7gT9Y'
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
     def __init__(self, spreadsheet_id):
