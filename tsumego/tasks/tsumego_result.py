@@ -156,6 +156,25 @@ class TsumegoResultParser(BaseSpreadSheetParser):
                         except IntegrityError:
                             pass
 
+                position_task = row[3 + counter * step + 12]
+                if position_task:
+                    position_task = int(position_task)
+                    for i in range(position_task):
+                        tsumego, _ = Tsumego.objects.get_or_create(
+                            number=i + 11,
+                            date=date(self.year, self.month, day),
+                            kind='position',
+                        )
+
+                        tsumego_result = TsumegoResult(
+                            user=user,
+                            tsumego=tsumego,
+                            status='done'
+                        )
+                        tsumego_result.save()
+
+            counter += 1
+
         return today
 
     def parse_subscription(self, row: List[str], users: List[User]):
