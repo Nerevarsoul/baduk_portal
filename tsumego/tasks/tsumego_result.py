@@ -156,7 +156,7 @@ class TsumegoResultParser(BaseSpreadSheetParser):
                         except IntegrityError:
                             pass
 
-                position_task = row[3 + counter * step + 12]
+                position_task = row[3 + (counter + 1) * step - 1]
                 if position_task:
                     position_task = int(position_task)
                     for i in range(position_task):
