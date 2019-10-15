@@ -81,7 +81,7 @@ class TsumegoResultParser(BaseSpreadSheetParser):
         return month, int(year)
 
     def run_current(self):
-        range_name = self.get_current_range
+        range_name = self.get_current_range()
         self.handle_range(range_name)
 
     def run(self, first_range: int):
