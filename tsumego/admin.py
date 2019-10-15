@@ -15,8 +15,16 @@ class TsumegoAdmin(admin.ModelAdmin):
 
 @admin.register(TsumegoResult)
 class TsumegoResultAdmin(DynamicRawIDMixin, admin.ModelAdmin):
-    list_display = ('tsumego', 'user', 'status', )
-    list_filter = ('status', ('user', DynamicRawIDFilter),)
+    list_display = ('tsumego', 'user', 'status', 'get_level', 'get_kind',)
+    list_filter = ('status', ('user', DynamicRawIDFilter), 'tsumego__level', 'tsumego__kind')
     search_fields = ('user__username',)
-    list_select_related = ('user',)
+    list_select_related = ('user', 'tsumego')
     dynamic_raw_id_fields = ('user',)
+
+    def get_level(self, obj):
+        return obj.tsumego.get_level_display()
+    get_level.short_description = 'Уровень задачи'
+
+    def get_kind(self, obj):
+        return obj.tsumego.get_kind_display()
+    get_kind.short_description = 'Тип задачи'
