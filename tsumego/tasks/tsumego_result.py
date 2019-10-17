@@ -86,6 +86,7 @@ class TsumegoResultParser(BaseSpreadSheetParser):
 
     def run(self, first_range: int):
         for range_name in self.get_all_ranges()[first_range:]:
+            print(range_name)
             self.handle_range(range_name)
 
     def handle_range(self, range_name):
@@ -107,20 +108,25 @@ class TsumegoResultParser(BaseSpreadSheetParser):
         counter = 3
         while counter < len(row):
             ceil = row[counter]
-            if ceil:
-                nickname, name = ceil.split('(')
-                user, _ = User.objects.get_or_create(
-                    username=nickname if nickname else name,
-                    first_name=name[:-1]
-                )
-                self.users.append(user)
-            else:
+            try:
+                if ceil:
+                    nickname, name = ceil.split('(')
+                    user, _ = User.objects.get_or_create(
+                        username=nickname if nickname else name,
+                        first_name=name[:-1]
+                    )
+                    self.users.append(user)
+                else:
+                    self.users.append(None)
+            except ValueError:
                 self.users.append(None)
             counter += 12
 
     def parse_day_result(self, row: List[str]):
 
         today = row[0] == self.TRUE
+        if not row[1].isdigit():
+            return
         day = int(row[1])
         task_count = row[2]
         if not task_count:
@@ -166,12 +172,15 @@ class TsumegoResultParser(BaseSpreadSheetParser):
                             kind='position',
                         )
 
-                        tsumego_result = TsumegoResult(
-                            user=user,
-                            tsumego=tsumego,
-                            status='done'
-                        )
-                        tsumego_result.save()
+                        try:
+                            tsumego_result = TsumegoResult(
+                                user=user,
+                                tsumego=tsumego,
+                                status='done'
+                            )
+                            tsumego_result.save()
+                        except IntegrityError:
+                            pass
 
             counter += 1
 

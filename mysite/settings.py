@@ -26,6 +26,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    'django_rq',
+    'scheduler',
+
     'django_tables2',
     'dynamic_raw_id',
     'rangefilter',
@@ -125,3 +128,13 @@ STATIC_ROOT = os.path.join(BASE_DIR, "prod_static/")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': '127.0.0.1',
+        'PORT': 6379,
+        'DB': 5,
+        'PASSWORD': 'redis',
+        'DEFAULT_TIMEOUT': 360,
+    }
+}
