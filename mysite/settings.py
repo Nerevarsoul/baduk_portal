@@ -138,3 +138,7 @@ RQ_QUEUES = {
         'DEFAULT_TIMEOUT': 360,
     }
 }
+
+RQ = {
+    'DEFAULT_RESULT_TTL': 5000,
+}
