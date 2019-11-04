@@ -35,6 +35,7 @@ INSTALLED_APPS = [
 
     'accounts.apps.AccountsConfig',
     'tsumego.apps.TsumegoConfig',
+    'tournament.apps.TournamentConfig',
 ]
 
 MIDDLEWARE = [

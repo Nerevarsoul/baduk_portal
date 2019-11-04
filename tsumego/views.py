@@ -3,7 +3,7 @@ from datetime import date
 from django_tables2 import SingleTableView
 
 from .models import TsumegoResult
-from .tables import TsumegoResultTable
+from .tables import *
 
 
 class TsumegoResultListView(SingleTableView):
@@ -16,3 +16,8 @@ class TsumegoResultListView(SingleTableView):
         year = self.kwargs.get('year') if self.kwargs.get('year') else date.today().year
         month = self.kwargs.get('month') if self.kwargs.get('month') else date.today().month
         return TsumegoResult.objects.list_by_user(year, month)
+
+
+class TsumegoAllResultListView(TsumegoResultListView):
+    table_class = TsumegoAllResultTable
+    queryset = TsumegoResult.objects.list()
