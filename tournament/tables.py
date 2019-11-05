@@ -13,8 +13,8 @@ class TournamentTable(tables.Table):
 
     row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
     player = tables.Column(verbose_name='Игрок')
-    all_games = tables.Column(verbose_name='Игры')
-    total = tables.Column(verbose_name='Итого')
+    wins = tables.Column(verbose_name='Победы')
+    total = tables.Column(verbose_name='Очки')
 
     def __init__(self, *args, **kwargs):
         new_data = []
