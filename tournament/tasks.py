@@ -1,5 +1,7 @@
 import re
 
+from django_rq import job
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -9,6 +11,7 @@ from tournament.models import *
 __all__ = ('parse_games_from_kgs',)
 
 
+@job
 def parse_games_from_kgs():
     for tournament in Tournament.objects.filter(is_active=True).prefetch_related(
             'participants', 'participants__user'
