@@ -67,20 +67,24 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
 
         opponent = nick_w if nick_w != participant.user.username else nick_b
         if opponent not in done_list:
+            print(f'{nick_w} vs {nick_b}')
 
             try:
                 opponent = tournament.participants.get(user__username=opponent)
             except Participant.DoesNotExist:
-                return
+                print(f'{opponent} - does not exists')
+                continue
 
             link = td_list[0].find('a').attrs.get('href')
             sgf = download_link(link).decode()
             finding_tag = re.search(tag, sgf)
             colour_of_winner = td_list[6].get_text()
+            if colour_of_winner == 'Unfinished':
+                continue
             # handicap = td_list[3].get_text().split(' ')[1]
             try:
                 score = float(colour_of_winner.split('+')[1])
-            except ValueError:
+            except (ValueError, IndexError):
                 score = None
 
             if finding_tag:
