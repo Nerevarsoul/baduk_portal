@@ -36,7 +36,14 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
     soup = BeautifulSoup(page.text, 'html.parser')
 
     table = soup.find_all('table')
+
+    if not table:
+        return 
+
     tr_list = table[0].find_all('tr')
+
+    if not tr_list:
+        return
 
     # 0 -- ссылка на просмотр
     # 1 -- ник белого
@@ -67,7 +74,7 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
             sgf = download_link(link).decode()
             finding_tag = re.search(tag, sgf)
             colour_of_winner = td_list[6].get_text()
-            handicap = td_list[3].get_text().split(' ')[1]
+            # handicap = td_list[3].get_text().split(' ')[1]
             try:
                 score = float(colour_of_winner.split('+')[1])
             except ValueError:
@@ -79,7 +86,7 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
                     black_player=participant if participant.user.username == nick_b else opponent,
                     tournament=tournament,
                     status='done',
-                    handicap=int(handicap) if handicap else 0,
+                    # handicap=int(handicap) if handicap else 0,
                     result='white' if colour_of_winner.startswith('W') else 'black',
                     score=score
                 )
