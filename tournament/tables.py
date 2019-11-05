@@ -13,6 +13,7 @@ class TournamentTable(tables.Table):
 
     row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
     player = tables.Column(verbose_name='Игрок')
+    all_games = tables.Column(verbose_name='Игры')
     total = tables.Column(verbose_name='Итого')
 
     def __init__(self, *args, **kwargs):
@@ -21,7 +22,7 @@ class TournamentTable(tables.Table):
 
         for participant in kwargs['data'][0].participants.all():
             new_data.append({'player': participant.user.username, 'all_games': 0, 'wins': 0})
-            extra_columns.append((participant.user.username, tables.Column()))
+            # extra_columns.append((participant.user.username, tables.Column()))
 
         for game in kwargs['data'][0].games.all():
             if game.result == 'white':
@@ -39,12 +40,14 @@ class TournamentTable(tables.Table):
                     col[winner] = 0
                     col['all_games'] += 1
 
-        kwargs['data'] = new_data
         for d in new_data:
             if d['all_games']:
                 d['total'] = round(d['wins'] / d['all_games'] + d['wins'] * 0.04, 2)
+                extra_columns.append((d['player'], tables.Column()))
             else:
                 d['total'] = 0
+
+        kwargs['data'] = new_data
         kwargs['extra_columns'] = extra_columns
         super().__init__(*args, **kwargs)
 
