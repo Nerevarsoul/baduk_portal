@@ -9,10 +9,11 @@ class TournamentTable(tables.Table):
         model = Tournament
         template_name = 'django_tables2/bootstrap.html'
         fields = ('row_number', 'player',)
-        order_by = '-total'
+        order_by = ('-total', '-all_games')
 
     row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
     player = tables.Column(verbose_name='Игрок')
+    all_games = tables.Column(verbose_name='Игры')
     wins = tables.Column(verbose_name='Победы')
     total = tables.Column(verbose_name='Очки')
 
