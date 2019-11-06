@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timedelta
 
 from django_rq import job
 
@@ -59,8 +60,16 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
     for tr in tr_list[1:]:
 
         td_list = tr.find_all('td')
-        if not td_list:
+        if not td_list or len(td_list) != 7:
             continue
+
+        colour_of_winner = td_list[6].get_text()
+        if colour_of_winner == 'Unfinished':
+            continue
+
+        game_datetime = datetime.strptime(td_list[4].get_text(), "%m/%d/%y %H:%M %p")
+        if game_datetime + timedelta(hours=3) < datetime.now():
+            return
 
         nick_w = td_list[1].get_text().split(' ')[0]
         nick_b = td_list[2].get_text().split(' ')[0]
@@ -78,9 +87,6 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
             link = td_list[0].find('a').attrs.get('href')
             sgf = download_link(link).decode()
             finding_tag = re.search(tag, sgf)
-            colour_of_winner = td_list[6].get_text()
-            if colour_of_winner == 'Unfinished':
-                continue
             # handicap = td_list[3].get_text().split(' ')[1]
             try:
                 score = float(colour_of_winner.split('+')[1])
