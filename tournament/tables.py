@@ -10,6 +10,9 @@ class TournamentTable(tables.Table):
         template_name = 'django_tables2/bootstrap.html'
         fields = ('row_number', 'player',)
         order_by = ('-total', '-all_games')
+        row_attrs = {
+            'class': lambda record: 'font-weight-bold' if record['all_games'] > 3 else ''
+        }
 
     row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
     player = tables.Column(verbose_name='Игрок')
