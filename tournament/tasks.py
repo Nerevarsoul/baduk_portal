@@ -34,6 +34,7 @@ def download_link(link):
 
 def kgs_game_parsing(participant, done_list, tag, tournament):
     name = participant.user.username
+    print(name)
     url = 'http://www.gokgs.com/gameArchives.jsp?user=+' + name
     page = requests.get(url)
 
@@ -67,8 +68,13 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
         if colour_of_winner == 'Unfinished':
             continue
 
-        game_datetime = datetime.strptime(td_list[4].get_text(), "%m/%d/%y %H:%M %p")
-        if game_datetime + timedelta(hours=3) < datetime.now():
+        try:
+            game_datetime = datetime.strptime(td_list[4].get_text(), "%m/%d/%y %H:%M %p")
+            if game_datetime + timedelta(hours=6) > datetime.now():
+                print('6 hours')
+                return
+        except ValueError:
+            print('ValueError')
             return
 
         nick_w = td_list[1].get_text().split(' ')[0]
@@ -84,8 +90,11 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
                 print(f'{opponent} - does not exists')
                 continue
 
-            link = td_list[0].find('a').attrs.get('href')
-            sgf = download_link(link).decode()
+            link = td_list[0].find('a')
+            if not link:
+                continue
+            href = link.attrs.get('href')
+            sgf = download_link(href).decode()
             finding_tag = re.search(tag, sgf)
             # handicap = td_list[3].get_text().split(' ')[1]
             try:
