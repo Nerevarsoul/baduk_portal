@@ -44,6 +44,8 @@ class Tournament(models.Model):
         blank=True, null=True
     )
     tag = models.CharField(verbose_name='Тэг', max_length=150, blank=True, null=True)
+    point_for_game = models.FloatField(verbose_name='Очки за партию', default=0)
+    point_for_win = models.FloatField(verbose_name='Очки за победу', default=0.04)
 
     def __str__(self):
         return self.name
@@ -69,6 +71,8 @@ class Participant(models.Model):
     )
     level = models.IntegerField(verbose_name='Уровень', blank=True, null=True)
     start_points = models.FloatField(verbose_name='Стартовые очки', blank=True, null=True)
+    title_holder = models.BooleanField(verbose_name='Держатель титула', default=False)
+    challenger = models.BooleanField(verbose_name='Претендент', default=False)
 
     def __str__(self):
         return self.user.username
