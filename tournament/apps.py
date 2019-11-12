@@ -12,8 +12,4 @@ class TournamentConfig(AppConfig):
 
         scheduler = django_rq.get_scheduler('default')
 
-        # Delete any existing jobs in the scheduler when the app starts up
-        # for job in scheduler.get_jobs():
-            # job.delete()
-
         scheduler.cron('0 * * * *', func=parse_games_from_kgs, repeat=None)

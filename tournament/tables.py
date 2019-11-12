@@ -46,7 +46,12 @@ class TournamentTable(tables.Table):
 
         for d in new_data:
             if d['all_games']:
-                d['total'] = round(d['wins'] / d['all_games'] + d['wins'] * 0.04, 2)
+                d['total'] = round(
+                    d['wins'] / d['all_games'] +
+                    d['wins'] * kwargs['data'][0].point_for_win +
+                    d['all_games'] * kwargs['data'][0].point_for_game,
+                    2
+                )
                 extra_columns.append((d['player'], tables.Column()))
             else:
                 d['total'] = 0
