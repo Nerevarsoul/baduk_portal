@@ -70,7 +70,7 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
 
         try:
             game_datetime = datetime.strptime(td_list[4].get_text(), "%m/%d/%y %H:%M %p")
-            if game_datetime + timedelta(hours=6) > datetime.now():
+            if game_datetime + timedelta(hours=24) < datetime.now():
                 print('6 hours')
                 return
         except ValueError:
