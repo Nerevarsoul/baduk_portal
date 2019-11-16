@@ -1,5 +1,7 @@
 import os
 
+from .secret import *
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -136,7 +138,7 @@ RQ_QUEUES = {
         'HOST': '127.0.0.1',
         'PORT': 6379,
         'DB': 5,
-        'PASSWORD': '',
+        'PASSWORD': REDIS_PASSWORD,
         'DEFAULT_TIMEOUT': 360,
     }
 }
