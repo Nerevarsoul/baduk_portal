@@ -15,7 +15,15 @@ class TournamentAdmin(admin.ModelAdmin):
 
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
-    pass
+    list_filter = (
+        'tournament__name', 'title_holder', 'challenger',
+    )
+    list_select_related = ('user', 'tournament')
+    list_display = ('user', 'get_tournament', 'title_holder', 'challenger',)
+
+    @staticmethod
+    def get_tournament(instance):
+        return instance.tournament.name
 
 
 @admin.register(Game)
