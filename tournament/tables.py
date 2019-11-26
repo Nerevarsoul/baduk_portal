@@ -24,10 +24,10 @@ class TournamentTable(tables.Table):
         new_data = []
         extra_columns = []
 
-        for participant in kwargs['data'][0].participants.all():
+        for participant in kwargs['data'].participants.all():
             new_data.append({'player': participant.user.username, 'all_games': 0, 'wins': 0})
 
-        for game in kwargs['data'][0].games.all():
+        for game in kwargs['data'].games.all():
             if game.result == 'white':
                 winner = game.white_player.user.username
                 looser = game.black_player.user.username
@@ -43,14 +43,14 @@ class TournamentTable(tables.Table):
                     col[winner] = 0
                     col['all_games'] += 1
 
-        title_holder = kwargs['data'][0].participants.filter(title_holder=True)
+        title_holder = kwargs['data'].participants.filter(title_holder=True)
 
         for d in new_data:
             if d['all_games']:
                 d['total'] = round(
                     d['wins'] / d['all_games'] +
-                    d['wins'] * kwargs['data'][0].point_for_win +
-                    d['all_games'] * kwargs['data'][0].point_for_game,
+                    d['wins'] * kwargs['data'].point_for_win +
+                    d['all_games'] * kwargs['data'].point_for_game,
                     2
                 )
                 extra_columns.append((d['player'], tables.Column()))
