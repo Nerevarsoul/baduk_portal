@@ -112,6 +112,7 @@ class Game(models.Model):
         on_delete=models.CASCADE,
         related_name='black_user'
     )
+    time_started = models.DateTimeField(verbose_name='Время начала партии', blank=True, null=True)
     status = models.CharField(
         verbose_name='Статус',
         choices=STATUS_CHOICES,

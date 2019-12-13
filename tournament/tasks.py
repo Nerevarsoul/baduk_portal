@@ -107,6 +107,7 @@ def kgs_game_parsing(participant, done_list, tag, tournament):
                     white_player=participant if participant.user.username == nick_w else opponent,
                     black_player=participant if participant.user.username == nick_b else opponent,
                     tournament=tournament,
+                    time_started=game_datetime,
                     status='done',
                     # handicap=int(handicap) if handicap else 0,
                     result='white' if colour_of_winner.startswith('W') else 'black',
