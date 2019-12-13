@@ -1,4 +1,4 @@
-{% load staticfiles %}
+{% load static %}
 {% load render_table from django_tables2 %}
 <!DOCTYPE html>
 <html lang="en">
@@ -9,6 +9,7 @@
 </head>
 <body>
     {% render_table table %}
-</body>
+
     <link rel="stylesheet" href="{% static "tournament_table.css" %}">
+</body>
 </html>
