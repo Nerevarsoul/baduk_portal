@@ -170,3 +170,8 @@ class KgsGameParsing:
                 self.parsing_game(table_line, participant)
             except (KgsGameCreateError, OpponentDoneError, Participant.DoesNotExist):
                 continue
+            except Exception as e:
+                print(participant)
+                print(table_line)
+                print(e)
+                continue
