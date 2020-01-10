@@ -1,0 +1,13 @@
+body {
+    background: #f2faf4;
+}
+.navbar{ background:#13331c; height: 80px}
+.nav-link , .navbar-brand{ color: #f4f4f4; cursor: pointer;}
+.nav-link{ margin-right: 1em !important;}
+.nav-link:hover{ background: #f4f4f4; color: #13331c; }
+.navbar-brand:hover{ color: #7ca386; }
+.navbar-collapse{ justify-content: flex-end;}
+.navbar-toggler{  background:#fff !important;}
+.gudzumi-header{  color:#13331c; }
+.gudzumi-link{  color:#13331c; font-size:20px; }
+.gudzumi-link:hover{  color:#13331c; }
