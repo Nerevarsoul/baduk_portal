@@ -28,4 +28,12 @@ class ParticipantAdmin(admin.ModelAdmin):
 
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
-    pass
+    list_filter = (
+        'tournament__name',
+    )
+    list_display = (
+        'tournament', 'white_player', 'black_player', 'time_started', 'result', 'score',
+    )
+    list_select_related = (
+        'tournament', 'white_player', 'black_player', 'white_player__user', 'black_player__user',
+    )

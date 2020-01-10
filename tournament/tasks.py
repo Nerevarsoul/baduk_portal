@@ -15,9 +15,8 @@ __all__ = ('parse_games_from_kgs',)
 
 @job
 def parse_games_from_kgs():
-    for tournament in Tournament.objects.filter(is_active=True).prefetch_related(
-            'participants', 'participants__user'
-    ):
+    for tournament in Tournament.objects.filter(is_active=True)\
+            .prefetch_related('participants', 'participants__user'):
         kgs_parsing = KgsGameParsing(tournament)
         kgs_parsing.run()
 
