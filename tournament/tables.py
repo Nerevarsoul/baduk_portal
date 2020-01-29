@@ -4,7 +4,14 @@ import django_tables2 as tables
 from .models import Tournament
 
 
-class TournamentTable(tables.Table):
+class BaseTournamentTable(tables.Table):
+
+    def render_row_number(self):
+        self.row_number = getattr(self, 'row_number', itertools.count())
+        return next(self.row_number) + 1
+
+
+class TournamentTable(BaseTournamentTable):
     class Meta:
         model = Tournament
         template_name = 'django_tables2/bootstrap.html'
@@ -25,7 +32,13 @@ class TournamentTable(tables.Table):
         extra_columns = []
 
         for participant in kwargs['data'].participants.all():
-            new_data.append({'player': participant.user.username, 'all_games': 0, 'wins': 0})
+            new_data.append(
+                {
+                    'player': participant.user.username,
+                    'all_games': 0,
+                    'wins': 0
+                }
+            )
 
         for game in kwargs['data'].games.all():
             if game.result == 'white':
@@ -67,3 +80,34 @@ class TournamentTable(tables.Table):
     def render_row_number(self):
         self.row_number = getattr(self, 'row_number', itertools.count())
         return next(self.row_number) + 1
+
+
+class TournamentLigaTable(BaseTournamentTable):
+    class Meta:
+        model = Tournament
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ('row_number', 'player',)
+        order_by = ('-score',)
+
+    row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
+    player = tables.Column(verbose_name='Игрок')
+    level = tables.Column(verbose_name='Рейтинг')
+    points = tables.Column(verbose_name='Очки')
+    score = tables.Column(verbose_name='Счет')
+
+    def __init__(self, *args, **kwargs):
+        new_data = []
+
+        for participant in kwargs['data'].participants.all():
+            new_data.append(
+                {
+                    'player': participant.user.username,
+                    'level': participant.level,
+                    'points': 0,
+                    'score': participant.start_points
+                }
+            )
+
+        kwargs['data'] = new_data
+
+        super().__init__(*args, **kwargs)

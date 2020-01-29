@@ -11,7 +11,18 @@ class Title(models.Model):
         verbose_name = 'Титул'
         verbose_name_plural = 'Титулы'
 
+    KIND_CHOICES = (
+        ('liga', 'лига'),
+        ('all', 'круговая'),
+    )
+
     name = models.CharField(verbose_name='Название', max_length=150)
+    kind = models.CharField(
+        verbose_name='Тип',
+        choices=KIND_CHOICES,
+        default=KIND_CHOICES[1][0],
+        max_length=10
+    )
     tag = models.CharField(verbose_name='Тэг', max_length=150)
     cron_string = models.CharField(verbose_name='Данные для авто создания турнира', max_length=20)
     time_to_life = models.IntegerField(verbose_name='Продолжительность')
