@@ -7,7 +7,10 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="homepage.html")),
+    path('', TemplateView.as_view(template_name="homepage.html"), name='homepage'),
+    path('news/', TemplateView.as_view(template_name="in_progress.html"), name='news'),
+    path('lessons/', TemplateView.as_view(template_name="in_progress.html"), name='lessons'),
+    path('contacts/', TemplateView.as_view(template_name="in_progress.html"), name='contacts'),
     path('admin/', admin.site.urls),
     path('tsumego/', include('tsumego.urls')),
     path('tournament/', include('tournament.urls')),
