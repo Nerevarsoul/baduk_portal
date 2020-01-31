@@ -14,6 +14,7 @@ class Title(models.Model):
     KIND_CHOICES = (
         ('liga', 'лига'),
         ('all', 'круговая'),
+        ('group', 'групповая лига'),
     )
 
     name = models.CharField(verbose_name='Название', max_length=150)
@@ -69,6 +70,11 @@ class Participant(models.Model):
         verbose_name = 'Участник'
         verbose_name_plural = 'Участники'
 
+    RANK_CHOICES = (
+        ('dan', 'дан'),
+        ('kyu', 'кю'),
+    )
+
     user = models.ForeignKey(
         User,
         verbose_name='Пользователь',
@@ -81,12 +87,17 @@ class Participant(models.Model):
         related_name='participants'
     )
     level = models.IntegerField(verbose_name='Уровень', blank=True, null=True)
+    rank = models.CharField(verbose_name='Ранг', max_length=3, blank=True, null=True)
     start_points = models.FloatField(verbose_name='Стартовые очки', blank=True, null=True)
     title_holder = models.BooleanField(verbose_name='Держатель титула', default=False)
     challenger = models.BooleanField(verbose_name='Претендент', default=False)
 
     def __str__(self):
         return self.user.username
+
+    @property
+    def get_rank_string(self):
+        return f'{self.level} {self.rank}'
 
 
 class Game(models.Model):
