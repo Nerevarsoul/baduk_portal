@@ -27,7 +27,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 
     @staticmethod
     def get_rank(instance):
-        return instance.get_rank
+        return instance.get_rank_string
 
 
 @admin.register(Game)
