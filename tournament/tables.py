@@ -126,6 +126,10 @@ class TournamentGroupLigaTable(BaseTournamentTable):
         fields = ('row_number',)
 
     row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
+    
+    def __init__(self, *args, **kwargs):
+        kwargs['data'] = []
+        super().__init__(*args, **kwargs)
 
 
 class TournamentListTable(tables.Table):
