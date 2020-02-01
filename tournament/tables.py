@@ -4,6 +4,12 @@ import django_tables2 as tables
 from .models import Tournament
 
 
+__all__ = (
+    'TournamentTable', 'TournamentLigaTable', 'TournamentListTable', 'TournamentInfoTable',
+    'TournamentGroupLigaTable',
+)
+
+
 class BaseTournamentTable(tables.Table):
 
     def render_row_number(self):
@@ -111,3 +117,58 @@ class TournamentLigaTable(BaseTournamentTable):
         kwargs['data'] = new_data
 
         super().__init__(*args, **kwargs)
+        
+
+class TournamentGroupLigaTable(BaseTournamentTable):
+    class Meta:
+        model = Tournament
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ('row_number',)
+
+    row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
+
+
+class TournamentListTable(tables.Table):
+    class Meta:
+        model = Tournament
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ('row_number', 'name', 'start_date', 'end_date', 'info_url', 'table_url',)
+        order_by = ('-start_date',)
+
+    row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
+    info_url = tables.TemplateColumn('<a href="info/{{record.id}}">Инфо</a>', verbose_name='')
+    table_url = tables.TemplateColumn('<a href="tables/{{record.id}}">Таблица</a>', verbose_name='')
+
+    def render_row_number(self):
+        self.row_number = getattr(self, 'row_number', itertools.count())
+        return next(self.row_number) + 1
+
+
+class TournamentInfoTable(tables.Table):
+    class Meta:
+        model = Tournament
+        template_name = 'django_tables2/bootstrap.html'
+        fields = ('row_number', )
+
+    row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
+    player = tables.Column(verbose_name='Игрок')
+    rank_string = tables.Column(verbose_name='Ранг')
+
+    def __init__(self, *args, **kwargs):
+        new_data = []
+
+        for participant in kwargs['data'].participants.all():
+            new_data.append(
+                {
+                    'player': participant.user.username,
+                    'rank_string': participant.get_rank_string,
+                    'rank_int': participant.get_rank_int
+                }
+            )
+
+        kwargs['data'] = sorted(new_data, key=lambda x: x['rank_int'], reverse=True)
+        super().__init__(*args, **kwargs)
+
+    def render_row_number(self):
+        self.row_number = getattr(self, 'row_number', itertools.count())
+        return next(self.row_number) + 1

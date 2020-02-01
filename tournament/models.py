@@ -97,7 +97,18 @@ class Participant(models.Model):
 
     @property
     def get_rank_string(self):
-        return f'{self.level} {self.rank}'
+        if self.level and self.rank:
+            return f'{self.level} {self.rank}'
+        return ''
+
+    @property
+    def get_rank_int(self):
+        if self.level and self.rank:
+            if self.rank == self.RANK_CHOICES[0][0]:
+                return 30 + self.level
+            else:
+                return 30 - self.level
+        return 0
 
 
 class Game(models.Model):
