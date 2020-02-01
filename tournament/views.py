@@ -35,6 +35,7 @@ class SingleTournamentView(BaseTournamentView):
 
         tour = Tournament.objects.get(id=self.kwargs.get('id'))
 
+        return self.get_table_by_title(tour.title)
 
 
 class LastTournamentByTitleView(BaseTournamentView):
@@ -46,6 +47,7 @@ class LastTournamentByTitleView(BaseTournamentView):
 
         title = Title.objects.get(id=self.kwargs.get('title_id'))
 
+        return self.get_table_by_title(title)
 
 
 class TournamentTitlesListView(SingleTableView):
