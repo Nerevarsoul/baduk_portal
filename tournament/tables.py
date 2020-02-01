@@ -123,12 +123,50 @@ class TournamentGroupLigaTable(BaseTournamentTable):
     class Meta:
         model = Tournament
         template_name = 'django_tables2/bootstrap.html'
-        fields = ('row_number',)
+        fields = ('row_number', 'player')
 
     row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
+    player = tables.Column(verbose_name='Игрок')
+    rank_string = tables.Column(verbose_name='Уровень')
     
     def __init__(self, *args, **kwargs):
-        kwargs['data'] = []
+        new_data = []
+
+        max_group_size = 0
+
+        for participant in kwargs['data'].participants.all():
+            player_info = {
+                'player': participant.user.username,
+                'rank_string': participant.get_rank_string,
+                'points': 0,
+                'sos': 0,
+                'sodos': 0,
+                'start_points': participant.start_points,
+            }
+
+            group_size = len(
+                kwargs['data'].participants.filter(start_points=participant.start_points)
+            )
+
+            for i in range(group_size-1):
+                player_info[str(i+1)] = ''
+
+            if group_size > max_group_size:
+                max_group_size = group_size
+
+            new_data.append(player_info)
+
+        extra_columns = []
+        for i in range(max_group_size):
+            extra_columns.append((str(i+1), tables.Column()))
+
+        extra_columns.append(('points', tables.Column(verbose_name='Очки')))
+        extra_columns.append(('sos', tables.Column(verbose_name='SOS')))
+        extra_columns.append(('sodos', tables.Column(verbose_name='SODOS')))
+
+        kwargs['data'] = new_data
+        kwargs['extra_columns'] = extra_columns
+
         super().__init__(*args, **kwargs)
 
 
@@ -136,11 +174,11 @@ class TournamentListTable(tables.Table):
     class Meta:
         model = Tournament
         template_name = 'django_tables2/bootstrap.html'
-        fields = ('row_number', 'name', 'start_date', 'end_date', 'info_url', 'table_url',)
+        fields = ('row_number', 'name', 'info_url', 'table_url', 'start_date', 'end_date',)
         order_by = ('-start_date',)
 
     row_number = tables.Column(empty_values=(), verbose_name='№', orderable=False)
-    info_url = tables.TemplateColumn('<a href="info/{{record.id}}">Инфо</a>', verbose_name='')
+    info_url = tables.TemplateColumn('<a href="info/{{record.id}}"><span >ℹ️</span></a>', verbose_name='')
     table_url = tables.TemplateColumn('<a href="tables/{{record.id}}">Таблица</a>', verbose_name='')
 
     def render_row_number(self):

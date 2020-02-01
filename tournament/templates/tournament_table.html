@@ -2,5 +2,13 @@
 {% load render_table from django_tables2 %}
 
 {% block content %}
-    {% render_table table %}
+    {% if tables %}
+        {% for table in tables %}
+            <h3 align="center">Группа {{ forloop.counter }}</h3>
+            {% render_table table %}
+            <br>
+        {% endfor %}
+    {% else %}
+        {% render_table table %}
+    {% endif %}
 {% endblock content %}

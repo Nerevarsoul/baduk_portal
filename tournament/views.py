@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 from django_tables2 import SingleTableView
 
 from tournament.models import Tournament, Title
@@ -24,6 +26,23 @@ class BaseTournamentView(SingleTableView):
             table_class = TournamentLigaTable
 
         return table_class
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        if isinstance(context['table'], TournamentGroupLigaTable):
+            context['tables'] = []
+            start_points = {d['start_points'] for d in context['table'].data}
+            start_points = sorted(tuple(start_points), reverse=True)
+            for start_point in start_points:
+                new_table = deepcopy(context['table'])
+                new_table.data.data = [
+                    d for d in new_table.data.data if d['start_points'] == start_point
+                ]
+                context['tables'].append(new_table)
+        else:
+            context['tables'] = [context['table']]
+        return context
 
 
 class SingleTournamentView(BaseTournamentView):
