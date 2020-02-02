@@ -93,7 +93,7 @@ class Participant(models.Model):
     challenger = models.BooleanField(verbose_name='Претендент', default=False)
 
     def __str__(self):
-        return self.user.username
+        return f'{self.user.username} ({self.tournament.name})'
 
     @property
     def get_rank_string(self):
