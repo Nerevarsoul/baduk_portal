@@ -38,7 +38,7 @@ class GameAdmin(admin.ModelAdmin):
         'tournament__name',
     )
     list_display = (
-        'tournament', 'white_player', 'black_player', 'time_started', 'result', 'score',
+        'tournament', 'white_player', 'black_player', 'result', 'score', 'time_started',
     )
     list_select_related = (
         'tournament', 'white_player', 'black_player', 'white_player__user', 'black_player__user',
