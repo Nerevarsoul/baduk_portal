@@ -1,4 +1,5 @@
 import itertools
+import operator
 
 import django_tables2 as tables
 from .models import Tournament
@@ -134,15 +135,21 @@ class TournamentGroupLigaTable(BaseTournamentTable):
 
         max_group_size = 0
 
+        group_start_points = set()
+
         for participant in kwargs['data'].participants.all():
             player_info = {
                 'player': participant.user.username,
                 'rank_string': participant.get_rank_string,
                 'points': 0,
                 'sos': 0,
-                'sodos': 0,
+                'sosos': 0,
                 'start_points': participant.start_points,
+                'wins': [],
+                'lost': [],
             }
+
+            group_start_points.add(participant.start_points)
 
             group_size = len(
                 kwargs['data'].participants.filter(start_points=participant.start_points)
@@ -156,13 +163,61 @@ class TournamentGroupLigaTable(BaseTournamentTable):
 
             new_data.append(player_info)
 
+        for game in kwargs['data'].games.all():
+            if game.result == 'white':
+                winner = game.white_player.user.username
+                looser = game.black_player.user.username
+            else:
+                winner = game.black_player.user.username
+                looser = game.white_player.user.username
+            for row in new_data:
+                if row['player'] == winner:
+                    row['points'] += 1
+                    row['wins'].append(looser)
+                if row['player'] == looser:
+                    row['lost'].append(winner)
+
+        for row in new_data:
+            sos = 0
+            for player in row['wins']:
+                for r in new_data:
+                    if r['player'] == player:
+                        sos += r['points']
+            row['sos'] = sos
+            sosos = sos
+            for player in row['lost']:
+                for r in new_data:
+                    if r['player'] == player:
+                        sosos += r['points']
+            row['sosos'] = sosos
+
         extra_columns = []
         for i in range(max_group_size):
             extra_columns.append((str(i+1), tables.Column()))
 
         extra_columns.append(('points', tables.Column(verbose_name='Очки')))
         extra_columns.append(('sos', tables.Column(verbose_name='SOS')))
-        extra_columns.append(('sodos', tables.Column(verbose_name='SODOS')))
+        extra_columns.append(('sosos', tables.Column(verbose_name='SOSOS')))
+
+        new_data = sorted(
+            new_data,
+            key=operator.itemgetter('start_points', 'points', 'sos', 'sosos'),
+            reverse=True
+        )
+
+        for start_points in group_start_points:
+            player_group = [x for x in new_data if x['start_points'] == start_points]
+            for player in player_group:
+                for opponent in player['wins']:
+                    i = next(
+                        (i for i, d in enumerate(player_group) if d['player'] == opponent), None
+                    )
+                    player[str(i + 1)] = 'W'
+                for opponent in player['lost']:
+                    i = next(
+                        (i for i, d in enumerate(player_group) if d['player'] == opponent), None
+                    )
+                    player[str(i + 1)] = 'L'
 
         kwargs['data'] = new_data
         kwargs['extra_columns'] = extra_columns
