@@ -1,4 +1,4 @@
-Django==2.2.9
+Django==2.2.13
 django-dynamic-raw-id==2.6
 django-admin-rangefilter==0.5.0
 django-tables2==2.1.0
