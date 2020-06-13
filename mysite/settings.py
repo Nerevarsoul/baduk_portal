@@ -29,7 +29,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_rq',
-    'scheduler',
 
     'django_tables2',
     'dynamic_raw_id',
