@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'accounts.apps.AccountsConfig',
     'tsumego.apps.TsumegoConfig',
     'tournament.apps.TournamentConfig',
+    'videos.apps.VideoConfig'
 ]
 
 MIDDLEWARE = [
@@ -126,7 +127,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = "/home/neri/static"
+STATIC_ROOT = os.path.join(BASE_DIR, "prod_static/")
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
