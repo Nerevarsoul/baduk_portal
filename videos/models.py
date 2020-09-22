@@ -23,6 +23,4 @@ class Video(TimeStampedModel):
         max_length=20
     )
     url = models.URLField(verbose_name='Ссылка')
-    sgf = models.FileField(verbose_name='СГФ файл', blank=True, null=True)
-
-
+    sgf = models.FileField(verbose_name='СГФ файл', upload_to='sgf', blank=True, null=True)
