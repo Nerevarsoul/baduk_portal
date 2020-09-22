@@ -28,8 +28,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'django_rq',
-
     'django_tables2',
     'dynamic_raw_id',
     'rangefilter',
@@ -132,42 +130,3 @@ STATIC_ROOT = os.path.join(BASE_DIR, "prod_static/")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
 )
-
-RQ_QUEUES = {
-    'default': {
-        'HOST': '127.0.0.1',
-        'PORT': 6379,
-        'DB': 5,
-        'PASSWORD': REDIS_PASSWORD,
-        'DEFAULT_TIMEOUT': 360,
-    }
-}
-
-RQ = {
-    'DEFAULT_RESULT_TTL': 5000,
-}
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {
-        "rq_console": {
-            "format": "%(asctime)s %(message)s",
-            "datefmt": "%H:%M:%S",
-        },
-    },
-    "handlers": {
-        "rq_console": {
-            "level": "DEBUG",
-            "class": "rq.utils.ColorizingStreamHandler",
-            "formatter": "rq_console",
-            "exclude": ["%(asctime)s"],
-        },
-    },
-    'loggers': {
-        "rq.worker": {
-            "handlers": ["rq_console"],
-            "level": "DEBUG"
-        },
-    }
-}
