@@ -3,6 +3,14 @@ from django.db import models
 from model_utils.models import TimeStampedModel
 
 
+class Tag(models.Model):
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
+
+    name = models.CharField(verbose_name='Имя', max_length=50)
+
+
 class Video(TimeStampedModel):
     class Meta:
         verbose_name = 'Видео'
@@ -24,3 +32,5 @@ class Video(TimeStampedModel):
     )
     url = models.URLField(verbose_name='Ссылка')
     sgf = models.FileField(verbose_name='СГФ файл', upload_to='sgf', blank=True, null=True)
+    date = models.DateField(verbose_name='Дата')
+    tags = models.ManyToManyField(Tag, verbose_name='Тэги', related_name='tag_videos')

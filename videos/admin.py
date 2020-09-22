@@ -10,10 +10,7 @@ class VideoAdmin(admin.ModelAdmin):
         'name', 'kind',
     )
 
-    @staticmethod
-    def get_tournament(instance):
-        return instance.tournament.name
 
-    @staticmethod
-    def get_rank(instance):
-        return instance.get_rank_string
+@admin.register(Tag)
+class VideoAdmin(admin.ModelAdmin):
+    pass
