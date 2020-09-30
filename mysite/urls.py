@@ -11,6 +11,7 @@ urlpatterns = [
     path('news/', TemplateView.as_view(template_name="in_progress.html"), name='news'),
     path('lessons/', TemplateView.as_view(template_name="in_progress.html"), name='lessons'),
     path('contacts/', TemplateView.as_view(template_name="in_progress.html"), name='contacts'),
+    path('videos/', include('videos.urls')),
     path('admin/', admin.site.urls),
     path('tsumego/', include('tsumego.urls')),
     path('tournament/', include('tournament.urls')),
