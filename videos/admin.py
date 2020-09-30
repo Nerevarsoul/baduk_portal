@@ -7,7 +7,7 @@ from .models import *
 class VideoAdmin(admin.ModelAdmin):
     list_filter = ('kind',)
     list_display = (
-        'name', 'kind',
+        'name', 'kind', 'date',
     )
 
 

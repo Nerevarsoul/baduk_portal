@@ -10,6 +10,12 @@ class Tag(models.Model):
 
     name = models.CharField(verbose_name='Имя', max_length=50)
 
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f'Tag({self.id} {self.name})'
+
 
 class Video(TimeStampedModel):
     class Meta:
@@ -34,3 +40,9 @@ class Video(TimeStampedModel):
     sgf = models.FileField(verbose_name='СГФ файл', upload_to='sgf', blank=True, null=True)
     date = models.DateField(verbose_name='Дата')
     tags = models.ManyToManyField(Tag, verbose_name='Тэги', related_name='tag_videos')
+
+    def __str__(self):
+        return self.name
+
+    def __repr__(self):
+        return f'Tag({self.id} {self.name})'

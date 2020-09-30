@@ -1,0 +1,58 @@
+[
+  {
+    "model": "videos.tag",
+    "pk": 1,
+    "fields": {
+      "name": "Атака"
+    }
+  },
+  {
+    "model": "videos.tag",
+    "pk": 2,
+    "fields": {
+      "name": "Тэсудзи"
+    }
+  },
+  {
+    "model": "videos.tag",
+    "pk": 3,
+    "fields": {
+      "name": "Фусеки"
+    }
+  },
+  {
+    "model": "videos.tag",
+    "pk": 4,
+    "fields": {
+      "name": "Йосе"
+    }
+  },
+  {
+    "model": "videos.tag",
+    "pk": 5,
+    "fields": {
+      "name": "Цумего"
+    }
+  },
+  {
+    "model": "videos.tag",
+    "pk": 6,
+    "fields": {
+      "name": "Джосеки"
+    }
+  },
+  {
+    "model": "videos.tag",
+    "pk": 7,
+    "fields": {
+      "name": "Задачи"
+    }
+  },
+  {
+    "model": "videos.tag",
+    "pk": 8,
+    "fields": {
+      "name": "Разборы"
+    }
+  }
+]
