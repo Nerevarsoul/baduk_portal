@@ -14,5 +14,5 @@ urlpatterns = [
         TsumegoVideosDateList.as_view(),
         name='tsumego_videos_date_list'
     ),
-    path('<str:kind>', VideosByTypeListView.as_view(), name='videos'),
+    path('<str:kind>', VideosByTypeListView.as_view(), name='videos')
 ]

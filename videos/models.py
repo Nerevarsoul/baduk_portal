@@ -45,4 +45,4 @@ class Video(TimeStampedModel):
         return self.name
 
     def __repr__(self):
-        return f'Tag({self.id} {self.name})'
+        return f'Video({self.id} {self.name})'

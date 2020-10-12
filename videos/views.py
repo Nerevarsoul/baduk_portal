@@ -19,9 +19,10 @@ class VideosByTypeListView(ListView):
 
 class TsumegoVideosDateList(MonthArchiveView):
     template_name = 'tsumego_videos_date_list.html'
-    queryset = Video.objects.filter(kind='tsumego_answer')
+    queryset = Video.objects.prefetch_related('tags').filter(kind='tsumego_answer')
     date_field = 'date'
     month_format = '%m'
+    allow_empty = True
 
     def get_month(self):
         try:
