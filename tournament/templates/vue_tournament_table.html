@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/vuetable-2@next"></script>
+{% endblock script %}
+
+{% block content %}
+    <div id="app">
+        {{ table_data|json_script:"tableData" }}
+        </br>
+
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-2">
+
+                    <select class="custom-select" v-model="selectedGroup">
+                       <option v-for="option in group_list" v-bind:value="option">
+                           [[ option ]]
+                       </option>
+                    </select>
+
+                </div>
+
+                <div class="col-md-10">
+                    <h3>[[selectedGroup]]</h3>
+                    <vuetable ref="vuetable"
+                        :fields="['name', 'age']"
+                        :api-mode="false"
+                        :data-manager="dataManager"
+                    ></vuetable>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="{% static "app.js" %}"></script>
+{% endblock content %}
