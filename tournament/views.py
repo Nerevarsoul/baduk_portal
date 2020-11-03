@@ -1,6 +1,7 @@
+from collections import defaultdict
 from copy import deepcopy
 
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, DetailView, ListView
 from django_tables2 import SingleTableView
 
 from tournament.models import Tournament, Title
@@ -13,30 +14,75 @@ __all__ = (
 )
 
 
-class VueTournamentView(TemplateView):
+class VueTournamentView(ListView):
     template_name = 'vue_tournament_table.html'
+
+    def get_queryset(self):
+        return Tournament.objects.details(self.kwargs.get('id'))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        context['table_data'] = {
-            'Группа А': [
-                {'name': 'Andrey', 'age': 12},
-                {'name': 'Oleg', 'age': 16},
-            ],
-            'Группа Б': [
-                {'name': 'Jorg', 'age': 22},
-                {'name': 'Finn', 'age': 46},
-            ],
-            'Группа В': [
-                {'name': 'Bert', 'age': 112},
-                {'name': 'Vaomi', 'age': 6},
-            ],
-            'Группа Г': [
-                {'name': 'Carl', 'age': 17},
-                {'name': 'Bill', 'age': 76},
-            ],
-        }
+        new_data = []
+        # extra_columns = []
+
+        tournament = context['object_list']
+
+        for participant in tournament.participants.all():
+
+            new_data.append(
+                {
+                    'player': participant.user.username,
+                    'start_points': participant.start_points,
+                    'all_games': 0,
+                    'wins': 0
+                }
+            )
+
+        for game in tournament.games.all():
+            if game.result == 'white':
+                winner = game.white_player.user.username
+                looser = game.black_player.user.username
+            else:
+                winner = game.black_player.user.username
+                looser = game.white_player.user.username
+            for col in new_data:
+                if col['player'] == winner:
+                    col[looser] = 1
+                    col['all_games'] += 1
+                    col['wins'] += 1
+                if col['player'] == looser:
+                    col[winner] = 0
+                    col['all_games'] += 1
+
+        # for d in new_data:
+        #     if d['all_games']:
+        #         d['total'] = round(
+        #             d['wins'] / d['all_games'] +
+        #             d['wins'] * kwargs['data'].point_for_win +
+        #             d['all_games'] * kwargs['data'].point_for_game,
+        #             2
+        #         )
+        #         extra_columns.append((d['player'], tables.Column()))
+        #     else:
+        #         d['total'] = 0
+
+        res = defaultdict(list)
+
+        for i in new_data:
+            res[i.pop('start_points')].append(i)
+
+        for group in res:
+            players = [p['player'] for p in res[group]]
+            for row in res[group]:
+                for p in players:
+                    if p not in row:
+                        row[p] = '-'
+
+        context['object_list'] = res
+
+        print(context['object_list'])
+
         return context
 
 
