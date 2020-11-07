@@ -24,12 +24,14 @@ class Title(models.Model):
         default=KIND_CHOICES[1][0],
         max_length=10
     )
-    tag = models.CharField(verbose_name='Тэг', max_length=150)
-    cron_string = models.CharField(verbose_name='Данные для авто создания турнира', max_length=20)
-    time_to_life = models.IntegerField(verbose_name='Продолжительность')
+    tag = models.CharField(verbose_name='Тэг', max_length=150, blank=True, null=True)
+    cron_string = models.CharField(
+        verbose_name='Данные для авто создания турнира', max_length=20, blank=True, null=True
+    )
+    time_to_life = models.IntegerField(verbose_name='Продолжительность', blank=True, null=True)
     tour_number = models.IntegerField(verbose_name='Число туров', blank=True, null=True)
-    is_active = models.BooleanField(verbose_name='Активен')
-    with_title_match = models.BooleanField(verbose_name='Матч за титул')
+    is_active = models.BooleanField(verbose_name='Активен', default=True)
+    with_title_match = models.BooleanField(verbose_name='Матч за титул', blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -48,7 +50,7 @@ class Tournament(models.Model):
     )
     start_date = models.DateField(verbose_name='Дата начала')
     end_date = models.DateField(verbose_name='Дата окончания')
-    is_active = models.BooleanField(verbose_name='Активен')
+    is_active = models.BooleanField(verbose_name='Активен', default=True)
     winner = models.ForeignKey(
         User,
         verbose_name='Победитель',
@@ -57,7 +59,7 @@ class Tournament(models.Model):
     )
     tag = models.CharField(verbose_name='Тэг', max_length=150, blank=True, null=True)
     point_for_game = models.FloatField(verbose_name='Очки за партию', default=0)
-    point_for_win = models.FloatField(verbose_name='Очки за победу', default=0.04)
+    point_for_win = models.FloatField(verbose_name='Очки за победу', default=1)
 
     def __str__(self):
         return self.name
@@ -89,8 +91,9 @@ class Participant(models.Model):
     level = models.IntegerField(verbose_name='Уровень', blank=True, null=True)
     rank = models.CharField(verbose_name='Ранг', max_length=3, blank=True, null=True)
     start_points = models.FloatField(verbose_name='Стартовые очки', blank=True, null=True)
-    title_holder = models.BooleanField(verbose_name='Держатель титула', default=False)
-    challenger = models.BooleanField(verbose_name='Претендент', default=False)
+    title_holder = models.BooleanField(verbose_name='Держатель титула', blank=True, null=True)
+    challenger = models.BooleanField(verbose_name='Претендент', blank=True, null=True)
+    group = models.IntegerField(verbose_name='Группа', blank=True, null=True)
 
     def __str__(self):
         return f'{self.user.username} ({self.tournament.name})'
@@ -156,6 +159,7 @@ class Game(models.Model):
         choices=RESULT_CHOICES,
         max_length=10
     )
+    tour = models.IntegerField(verbose_name='№ тура', blank=True, null=True)
     handicap = models.IntegerField(verbose_name='Фора', blank=True, null=True)
     score = models.FloatField(verbose_name='Счет', blank=True, null=True)
     sgf = models.FileField(verbose_name='СГФ', blank=True, null=True)
