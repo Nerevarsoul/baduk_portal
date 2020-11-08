@@ -33,44 +33,33 @@ class VueTournamentView(ListView):
             new_data.append(
                 {
                     'player': participant.user.username,
-                    'start_points': participant.start_points,
+                    'group': participant.group,
                     'all_games': 0,
                     'wins': 0
                 }
             )
 
         for game in tournament.games.all():
-            if game.result == 'white':
-                winner = game.white_player.user.username
-                looser = game.black_player.user.username
-            else:
-                winner = game.black_player.user.username
-                looser = game.white_player.user.username
-            for col in new_data:
-                if col['player'] == winner:
-                    col[looser] = 1
-                    col['all_games'] += 1
-                    col['wins'] += 1
-                if col['player'] == looser:
-                    col[winner] = 0
-                    col['all_games'] += 1
-
-        # for d in new_data:
-        #     if d['all_games']:
-        #         d['total'] = round(
-        #             d['wins'] / d['all_games'] +
-        #             d['wins'] * kwargs['data'].point_for_win +
-        #             d['all_games'] * kwargs['data'].point_for_game,
-        #             2
-        #         )
-        #         extra_columns.append((d['player'], tables.Column()))
-        #     else:
-        #         d['total'] = 0
+            if game.result:
+                if game.result == 'white':
+                    winner = game.white_player.user.username
+                    looser = game.black_player.user.username
+                else:
+                    winner = game.black_player.user.username
+                    looser = game.white_player.user.username
+                for col in new_data:
+                    if col['player'] == winner:
+                        col[looser] = 1
+                        col['all_games'] += 1
+                        col['wins'] += 1
+                    if col['player'] == looser:
+                        col[winner] = 0
+                        col['all_games'] += 1
 
         res = defaultdict(list)
 
         for i in new_data:
-            res[i.pop('start_points')].append(i)
+            res[i.pop('group')].append(i)
 
         for group in res:
             players = [p['player'] for p in res[group]]

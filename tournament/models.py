@@ -157,12 +157,17 @@ class Game(models.Model):
     result = models.CharField(
         verbose_name='Результат',
         choices=RESULT_CHOICES,
-        max_length=10
+        max_length=10,
+        blank=True,
+        null=True
     )
     tour = models.IntegerField(verbose_name='№ тура', blank=True, null=True)
     handicap = models.IntegerField(verbose_name='Фора', blank=True, null=True)
     score = models.FloatField(verbose_name='Счет', blank=True, null=True)
     sgf = models.FileField(verbose_name='СГФ', blank=True, null=True)
+    review_link = models.URLField(
+        verbose_name='Ссылка на разбор', blank=True, null=True
+    )
 
     def __str__(self):
         return f'{self.white_player.user.username} - {self.black_player.user.username}'

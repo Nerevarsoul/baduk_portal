@@ -16,11 +16,11 @@ class TournamentAdmin(admin.ModelAdmin):
 @admin.register(Participant)
 class ParticipantAdmin(admin.ModelAdmin):
     list_filter = (
-        'tournament__name', 'title_holder', 'challenger',
+        'tournament__name', 'group',
     )
     list_select_related = ('user', 'tournament')
     list_display = (
-        'user', 'get_rank', 'start_points', 'get_tournament', 'title_holder', 'challenger',
+        'user', 'get_rank', 'group', 'get_tournament',
     )
 
     @staticmethod
@@ -35,7 +35,7 @@ class ParticipantAdmin(admin.ModelAdmin):
 @admin.register(Game)
 class GameAdmin(admin.ModelAdmin):
     list_filter = (
-        'tournament__name',
+        'tournament__name', 'tour',
     )
     list_display = (
         'tournament', 'white_player', 'black_player', 'result', 'score', 'time_started',

@@ -13,7 +13,7 @@ from accounts.models import User
 from tournament.models import *
 
 
-def create_tournament():
+def main():
     title = Title.objects.get(
         name='Gudzumi League',
         kind=Title.KIND_CHOICES[2][0]
@@ -23,7 +23,7 @@ def create_tournament():
         title=title,
         name='Gudzumi League 11.2020',
         start_date=date.today().replace(day=1),
-        end_date=date.today() + relativedelta(days=31)
+        end_date=date.today().replace(day=1) + relativedelta(months=1)
     )
     tournament.save()
     with open('../../Gudzumi League 11.2020 - Players.csv') as f:
